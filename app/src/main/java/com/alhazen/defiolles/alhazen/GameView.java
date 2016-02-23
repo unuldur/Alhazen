@@ -100,7 +100,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     // shutdown our thread.
     public void pause() {
         playing = false;
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.unregisterListener(this);
         try {
             gameThread.join();
         } catch (InterruptedException e) {
@@ -111,9 +111,9 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     public void resume() {
         playing = true;
-        senSensorManager.unregisterListener(this);
         gameThread = new Thread(this);
         gameThread.start();
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override

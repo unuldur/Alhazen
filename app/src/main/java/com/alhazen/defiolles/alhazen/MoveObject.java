@@ -29,6 +29,7 @@ public abstract class MoveObject extends GameObject {
     public void setDirectionX(Direction.DirectionEnum direction) {
         this.directionX = direction;
     }
+
     public Direction.DirectionEnum getDirectionY() {
         return directionY;
     }
