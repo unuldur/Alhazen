@@ -1,6 +1,7 @@
 package com.alhazen.defiolles.alhazen;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,6 +14,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -140,18 +142,41 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        if(!p.isAuSol()) return;
         Sensor mySensor = sensorEvent.sensor;
-        System.out.println(p.getDirectionY());
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
-            float z = sensorEvent.values[2];
-            if(y< 0 )
-                p.setDirectionY(Direction.DirectionEnum.TOP);
-            else  p.setDirectionY(Direction.DirectionEnum.BOTTOM);
+            if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                changeDirectionY(x);
+            else
+                changeDirectionY(y);
+
 
         }
-        System.out.println(p.getDirectionY());
+    }
+
+    private void changeDirectionY(float axe)
+    {
+        boolean change = false;
+        if(axe< 0 ) {
+            if (p.getDirectionY() == Direction.DirectionEnum.BOTTOM) {
+                p.setDirectionY(Direction.DirectionEnum.TOP);
+                change = true;
+            }
+        }
+        else {
+            if (p.getDirectionY() == Direction.DirectionEnum.TOP) {
+                p.setDirectionY(Direction.DirectionEnum.BOTTOM);
+                change = true;
+
+            }
+        }
+        if(change)
+        {
+            p.setAuSol(false);
+            p.turnThis();
+        }
     }
 
     @Override

@@ -93,6 +93,7 @@ public class Mur extends InanimateObject {
 
         int y = Direction.getIntDirectionY(moveObject.getDirectionY());
         if(y != 0 ) moveObject.setPosY(moveObject.getPosY() - y);
+        moveObject.setAuSol(true);
         effectY(moveObject);
     }
 

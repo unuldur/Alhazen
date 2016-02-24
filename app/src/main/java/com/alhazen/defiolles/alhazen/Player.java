@@ -5,7 +5,7 @@ import android.content.res.Resources;
 /**
  * Created by PAYS on 21/02/2016.
  */
-public class Player extends MoveObject {
+public class Player extends MoveObject  {
 
     private int currentFrame;
     private int nbFrameMouvement;

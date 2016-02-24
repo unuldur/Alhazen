@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -30,6 +31,7 @@ public class SpriteSheet {
                 frameWidth * frameCount,
                 frameHeight,
                 false);
+
         frameToDraw= new Rect(0,0,frameWidth,frameHeight);
     }
 
@@ -64,6 +66,15 @@ public class SpriteSheet {
     public void drawCurrentFrame(Canvas canvas,RectF dest,Paint paint)
     {
         canvas.drawBitmap(spriteSheet,frameToDraw,dest,paint);
+    }
+
+    public void rotation(int degree)
+    {
+        Matrix m = new Matrix();
+        m.postRotate(degree);
+        spriteSheet = Bitmap.createBitmap(spriteSheet, 0, 0,
+                spriteSheet.getWidth(), spriteSheet.getHeight(),
+                m, true);
     }
 
     public int getWidth() {
