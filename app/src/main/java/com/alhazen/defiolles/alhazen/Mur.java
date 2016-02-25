@@ -24,10 +24,14 @@ public class Mur extends InanimateObject {
         BOTTOM_RIGHT_IN,
     }
 
-    public Mur(Resources resources, int id, int nbFrameX,int nbFrameY,TypeDeMur typeDeMur,int posX,int posY) {
-        super(resources, id, nbFrameX,nbFrameY,0,0);
+    public Mur(Resources resources, int id, int nbFrameX,int nbFrameY,TypeDeMur typeDeMur,int posX,int posY,
+               int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
+        super(resources, id, nbFrameX, nbFrameY, 0, 0);
         initializeTexture(typeDeMur);
-        setPosition(posX*getWidth(),posY*getHeight());
+        int decalageX =(tailleEcranX- getWidth()*(tailleTableauX))/2;
+        int decalageY =(tailleEcranY- getHeight()*(tailleTableauY+2))/2;
+        System.out.println(tailleEcranX+" "+decalageX);
+        setPosition(posX*getWidth()+decalageX,posY*getHeight()+decalageY);
     }
 
     private void initializeTexture(TypeDeMur typeDeMur)

@@ -1,6 +1,7 @@
 package com.alhazen.defiolles.alhazen;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 /**
  * Created by PAYS on 21/02/2016.
@@ -16,6 +17,7 @@ public class Player extends MoveObject  {
         super(resources, id, nbFrame,posX,posY);
         this.nbFrameMouvement = nbFrameMouvement;
         this.frameLengthInMilliseconds = frameLengthInMilliseconds;
+        Log.d("format",getHeight()+" "+getWidth());
     }
 
     @Override
