@@ -1,13 +1,18 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
+import com.alhazen.defiolles.alhazen.Game.GameObject.Mur;
+
+import java.io.Serializable;
+
 /**
  * Created by PAYS on 23/02/2016.
  */
-public class Level {
+public class Level implements Serializable{
     Mur[][] level;
     int width;
     int height;
@@ -46,6 +51,15 @@ public class Level {
         for (int i=0 ;i<width ; i++) {
             for (int j = 0; j < height; j++) {
                 if (level[i][j] != null) level[i][j].effectY(object);
+            }
+        }
+    }
+
+    public void invertLevel()
+    {
+        for (int i=0 ;i<width ; i++) {
+            for (int j = 0; j < height; j++) {
+                if(level[i][j] != null) level[i][j].invertXY();
             }
         }
     }

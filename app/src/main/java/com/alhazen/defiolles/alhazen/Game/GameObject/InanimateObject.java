@@ -1,6 +1,8 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import android.content.res.Resources;
+
+import com.alhazen.defiolles.alhazen.Game.Collisions;
 
 /**
  * Created by PAYS on 23/02/2016.
@@ -18,7 +20,7 @@ public abstract class InanimateObject extends GameObject {
 
     public void effectX(MoveObject moveObject)
     {
-        if(Collisions.collisionGameObjects(this,moveObject)) aplieffectX(moveObject);
+        if(Collisions.collisionGameObjects(this, moveObject)) aplieffectX(moveObject);
     }
 
     protected abstract void aplieffectY(MoveObject moveObject);

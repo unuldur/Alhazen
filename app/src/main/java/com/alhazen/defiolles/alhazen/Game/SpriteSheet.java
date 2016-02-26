@@ -1,4 +1,4 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,17 +9,22 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.io.Serializable;
+
 /**
  * Created by PAYS on 21/02/2016.
  */
-public class SpriteSheet {
-    private Rect frameToDraw;
+public class SpriteSheet implements Serializable{
+
     private int frameWidth;
     private int frameHeight;
     private int frameCountX;
     private int frameCountY;
 
     Bitmap spriteSheet;
+    Bitmap imageToDraw;
+
+    Matrix matrixRotation;
 
     public SpriteSheet(Resources resources,int id,int frameCount) {
         this.frameCountX = frameCount;
@@ -32,7 +37,8 @@ public class SpriteSheet {
                 frameHeight,
                 false);
 
-        frameToDraw= new Rect(0,0,frameWidth,frameHeight);
+        matrixRotation = new Matrix();
+
     }
 
     public SpriteSheet(Resources resources,int id,int frameCountX, int frameCountY)
@@ -46,35 +52,33 @@ public class SpriteSheet {
                 frameWidth * frameCountX,
                 frameHeight * frameCountY,
                 false);
-        frameToDraw= new Rect(0,0,frameWidth,frameHeight);
+
+        matrixRotation = new Matrix();
     }
 
     public void setFrame(int frame) throws Exception {
         if(frame > frameCountX)  throw new Exception();
-        frameToDraw.left = frame * frameWidth;
-        frameToDraw.right = frameToDraw.left + frameWidth;
+        imageToDraw = Bitmap.createBitmap(spriteSheet,frame * frameWidth,0,frameWidth,frameHeight,matrixRotation,true);
     }
 
     public void setFrame(int frameX,int frameY) throws Exception {
         if(frameX > frameCountX && frameY > frameCountY)  throw new Exception();
-        frameToDraw.left = frameX * frameWidth;
-        frameToDraw.top = frameY * frameHeight;
-        frameToDraw.bottom = frameToDraw.top + frameHeight;
-        frameToDraw.right = frameToDraw.left + frameWidth;
+        imageToDraw = Bitmap.createBitmap(spriteSheet,frameX * frameWidth,frameY * frameHeight,frameWidth,frameHeight,matrixRotation,true);
     }
 
-    public void drawCurrentFrame(Canvas canvas,RectF dest,Paint paint)
+    public void drawCurrentFrame(Canvas canvas,int posX,int posY,Paint paint)
     {
-        canvas.drawBitmap(spriteSheet,frameToDraw,dest,paint);
+        canvas.drawBitmap(imageToDraw,posX,posY,paint);
     }
 
     public void rotation(int degree)
     {
-        Matrix m = new Matrix();
-        m.postRotate(degree);
-        spriteSheet = Bitmap.createBitmap(spriteSheet, 0, 0,
-                spriteSheet.getWidth(), spriteSheet.getHeight(),
-                m, true);
+        matrixRotation.postRotate(degree);
+    }
+
+    public void setRotation(int degree)
+    {
+        matrixRotation.setRotate(degree);
     }
 
     public int getWidth() {

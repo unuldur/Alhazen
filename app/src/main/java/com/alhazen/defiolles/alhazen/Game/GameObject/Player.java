@@ -1,7 +1,10 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import android.content.res.Resources;
 import android.util.Log;
+
+import com.alhazen.defiolles.alhazen.Game.Direction;
+import com.alhazen.defiolles.alhazen.Game.Level;
 
 /**
  * Created by PAYS on 21/02/2016.
@@ -13,11 +16,10 @@ public class Player extends MoveObject  {
     private long lastFrameChangeTime = 0;
     private long frameLengthInMilliseconds;
 
-    public Player(Resources resources, int id, int nbFrame , int nbFrameMouvement, long frameLengthInMilliseconds,int posX,int posY) {
-        super(resources, id, nbFrame,posX,posY);
+    public Player(Resources resources, int id, int nbFrame , int nbFrameMouvement, long frameLengthInMilliseconds,int posX,int posY,int orientation) {
+        super(resources, id, nbFrame,posX,posY,orientation);
         this.nbFrameMouvement = nbFrameMouvement;
         this.frameLengthInMilliseconds = frameLengthInMilliseconds;
-        Log.d("format",getHeight()+" "+getWidth());
     }
 
     @Override
@@ -52,13 +54,6 @@ public class Player extends MoveObject  {
     }
 
 
-
-    @Override
-    public void move(int pas,Level level){
-        setPosX(getPosX()+Direction.getIntDirectionX(directionX)*pas);
-        level.avanceX(this);
-        super.move(pas,level);
-    }
 
 
 }

@@ -1,15 +1,15 @@
 package com.alhazen.defiolles.alhazen;
 
-import android.app.ActivityManager;
+import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.pm.ConfigurationInfo;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.opengl.GLSurfaceView;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
+import com.alhazen.defiolles.alhazen.Game.GameView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        gameView = new GameView(this);
-
-
+        gameView = new GameView(this,savedInstanceState);
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        gameView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if(actionBar != null) actionBar.hide();
         setContentView(gameView);
 
     }
@@ -37,5 +38,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         gameView.pause();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        gameView.saveInstanceState(savedInstanceState);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
 
 }

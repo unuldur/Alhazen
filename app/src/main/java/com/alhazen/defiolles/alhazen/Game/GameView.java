@@ -1,24 +1,27 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.DisplayMetrics;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
+
+import com.alhazen.defiolles.alhazen.Game.GameObject.Player;
+import com.alhazen.defiolles.alhazen.R;
+
 public class GameView extends SurfaceView implements Runnable,SensorEventListener {
 
     Thread gameThread = null;
@@ -33,10 +36,6 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     private long timeThisFrame;
 
-    // Bob starts off not moving
-    boolean isMoving = false;
-
-    // He can walk at 150 pixels per second
     float walkSpeedPerSecond = 250;
 
     private SensorManager senSensorManager;
@@ -45,7 +44,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
 
     Player p;
-    public GameView(Context context) {
+    public GameView(Context context,Bundle savedInstanceState) {
         super(context);
 
         ourHolder = getHolder();
@@ -53,11 +52,16 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
         senSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
-        p =new Player(getResources(),R.drawable.perso,5,2,100,200,200);
-        level = new Level(13,18,getResources(),R.drawable.map,(int)getContext().getResources().getDisplayMetrics().widthPixels
-                ,(int)getContext().getResources().getDisplayMetrics().heightPixels);
+        if(savedInstanceState == null) {
+            p = new Player(getResources(), R.drawable.perso, 5, 2, 100, 200, 200,getOrientation());
+            level = new Level(13, 18, getResources(), R.drawable.map,  getContext().getResources().getDisplayMetrics().widthPixels
+                    ,getContext().getResources().getDisplayMetrics().heightPixels);
+        }
+        else{
+            loadInstanceState(savedInstanceState);
+        }
         fps = 60;
     }
 
@@ -82,7 +86,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     public void update() {
 
-        p.move((int) (walkSpeedPerSecond / fps), level);
+       p.move((int) (walkSpeedPerSecond / fps), level);
        p.updateFrame();
 
     }
@@ -91,8 +95,24 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
         if (ourHolder.getSurface().isValid()) {
             canvas = ourHolder.lockCanvas();
-            canvas.drawColor(Color.argb(255,  100, 100, 100));
-            paint.setColor(Color.argb(255, 249, 129, 0));
+            Matrix m = new Matrix();
+            switch(getOrientation())
+            {
+                case Surface.ROTATION_90:
+                    m.postRotate(270);
+                    m.postTranslate(0,getHeight());
+                    break;
+                case Surface.ROTATION_180:
+                    m.postRotate(180);
+                    m.postTranslate(getWidth(),getHeight());
+                    break;
+                case Surface.ROTATION_270:
+                    m.postRotate(90);
+                    m.postTranslate(getWidth(),0);
+                    break;
+            }
+            canvas.setMatrix(m);
+            canvas.drawColor(Color.argb(255, 100, 100, 100));
             p.draw(canvas,paint);
             level.drawLevel(canvas,paint);
             ourHolder.unlockCanvasAndPost(canvas);
@@ -100,8 +120,6 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     }
 
-    // If SimpleGameEngine Activity is paused/stopped
-    // shutdown our thread.
     public void pause() {
         playing = false;
         senSensorManager.unregisterListener(this);
@@ -113,12 +131,30 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     }
 
+    public void saveInstanceState(Bundle bundle)
+    {
+        bundle.putSerializable("Level",level);
+        bundle.putSerializable("Player",p);
+        bundle.putInt("Orientation", getContext().getResources().getConfiguration().orientation);
+    }
+
+    public void loadInstanceState(Bundle load)
+    {
+        p= (Player)load.getSerializable("Player");
+        level = (Level)load.getSerializable("Level");
+        p.setOrientation(getOrientation());
+    }
+
     public void resume() {
         playing = true;
         gameThread = new Thread(this);
         gameThread.start();
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+
+
+
 
 
     @Override
@@ -164,7 +200,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     private void changeDirectectionY(float val)
     {
-        if (val < 0) {
+        if (val < 1) {
             if (p.getDirectionY() == Direction.DirectionEnum.BOTTOM) {
                 p.setDirectionY(Direction.DirectionEnum.TOP);
                 p.setAuSol(false);
@@ -182,5 +218,10 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    private int getOrientation()
+    {
+        return ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
     }
 }

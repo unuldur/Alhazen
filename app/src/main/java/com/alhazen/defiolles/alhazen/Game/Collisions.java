@@ -1,4 +1,6 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game;
+
+import com.alhazen.defiolles.alhazen.Game.GameObject.GameObject;
 
 /**
  * Created by PAYS on 23/02/2016.

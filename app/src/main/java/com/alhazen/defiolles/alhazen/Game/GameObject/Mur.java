@@ -1,7 +1,11 @@
-package com.alhazen.defiolles.alhazen;
+package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import android.content.res.Resources;
-import android.media.effect.Effect;
+import android.view.Surface;
+
+import com.alhazen.defiolles.alhazen.Game.Direction;
+import com.alhazen.defiolles.alhazen.Game.GameObject.InanimateObject;
+import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
 
 /**
  * Created by Julien Defiolles on 23/02/2016.
@@ -24,13 +28,15 @@ public class Mur extends InanimateObject {
         BOTTOM_RIGHT_IN,
     }
 
+    private TypeDeMur typeDeMur;
+
     public Mur(Resources resources, int id, int nbFrameX,int nbFrameY,TypeDeMur typeDeMur,int posX,int posY,
                int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
         super(resources, id, nbFrameX, nbFrameY, 0, 0);
+        this.typeDeMur = typeDeMur;
         initializeTexture(typeDeMur);
         int decalageX =(tailleEcranX- getWidth()*(tailleTableauX))/2;
-        int decalageY =(tailleEcranY- getHeight()*(tailleTableauY+2))/2;
-        System.out.println(tailleEcranX+" "+decalageX);
+        int decalageY =(tailleEcranY- getHeight()*(tailleTableauY))/2;
         setPosition(posX*getWidth()+decalageX,posY*getHeight()+decalageY);
     }
 
@@ -87,7 +93,24 @@ public class Mur extends InanimateObject {
 
     @Override
     protected void aplieffectX(MoveObject moveObject) {
-        int x = Direction.getIntDirectionX(moveObject.getDirectionX());
+        int x =0;
+        switch (moveObject.getOrientation())
+        {
+            case Surface.ROTATION_0:
+                x = Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_90:
+                x = -Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_270:
+                x = -Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_180:
+                x = -Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+        }
         if(x != 0 ) moveObject.setPosX(moveObject.getPosX() - x);
         effectX(moveObject);
     }
@@ -95,9 +118,25 @@ public class Mur extends InanimateObject {
     @Override
     protected void aplieffectY(MoveObject moveObject) {
 
-        int y = Direction.getIntDirectionY(moveObject.getDirectionY());
+        int y =0;
+        switch (moveObject.getOrientation())
+        {
+            case Surface.ROTATION_0:
+                y = Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_90:
+                y = Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_270:
+                y = -Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_180:
+                y = -Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+        }
         if(y != 0 ) moveObject.setPosY(moveObject.getPosY() - y);
-        moveObject.setAuSol(true);
         effectY(moveObject);
     }
 
@@ -105,4 +144,6 @@ public class Mur extends InanimateObject {
     public void updateFrame() {
 
     }
+
+
 }
