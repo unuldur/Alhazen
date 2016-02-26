@@ -13,20 +13,35 @@ import java.io.Serializable;
  * Created by PAYS on 21/02/2016.
  */
 public abstract class GameObject implements Serializable{
-    protected SpriteSheet spriteSheet;
+    protected transient SpriteSheet spriteSheet;
     private int posX;
     private int posY;
+    private int spriteId;
+    private int nbFrameX;
+    private int nbFrameY;
 
-    public GameObject(Resources resources, int id, int nbFrame, int posX, int posY) {
-        this.spriteSheet = new SpriteSheet(resources,id,nbFrame);
+    public GameObject(int id, int nbFrame, int posX, int posY) {
+        spriteId = id;
+        this.nbFrameX = nbFrame;
+        nbFrameY = 0;
         this.posX = posX;
         this.posY = posY;
     }
 
-    public GameObject(Resources resources, int id, int nbFrameX,int nbFrameY, int posX, int posY) {
-        this.spriteSheet = new SpriteSheet(resources,id,nbFrameX,nbFrameY);
+    public GameObject( int id, int nbFrameX,int nbFrameY, int posX, int posY) {
+        spriteId = id;
+        this.nbFrameX = nbFrameX;
+        this.nbFrameY = nbFrameY;
         this.posX = posX;
         this.posY = posY;
+    }
+
+    public void initializeSprite(Resources resources)
+    {
+        if(nbFrameY != 0)
+            spriteSheet = new SpriteSheet(resources,spriteId,nbFrameX,nbFrameY);
+        else
+            spriteSheet = new SpriteSheet(resources,spriteId,nbFrameX);
     }
 
     public abstract void updateFrame();

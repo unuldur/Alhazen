@@ -16,25 +16,25 @@ public class Level implements Serializable{
     Mur[][] level;
     int width;
     int height;
-    public Level(int width,int height,Resources resources, int id,int widthEcran,int heightEcran) {
+    public Level(int width,int height, int id) {
         this.width = width;
         this.height = height;
         level = new Mur[width][height];
         for (int i =0 ;i< width ; i++)
         {
-            level[i][0] = new Mur(resources,id,3,5, Mur.TypeDeMur.BOTTOM,i,0,widthEcran,heightEcran,width,height);
-            level[i][height-1] = new Mur(resources,id,3,5, Mur.TypeDeMur.TOP,i,height-1,widthEcran,heightEcran,width,height);
+            level[i][0] = new Mur(id,3,5, Mur.TypeDeMur.BOTTOM);
+            level[i][height-1] = new Mur(id,3,5, Mur.TypeDeMur.TOP);
         }
 
         for (int i =0 ;i< height-1 ; i++)
         {
-            level[0][i] = new Mur(resources,id,3,5, Mur.TypeDeMur.RIGHT,0,i,widthEcran,heightEcran,width,height);
-            level[width-1][i] = new Mur(resources,id,3,5, Mur.TypeDeMur.LEFT,width-1,i,widthEcran,heightEcran,width,height);
+            level[0][i] = new Mur(id,3,5, Mur.TypeDeMur.RIGHT);
+            level[width-1][i] = new Mur(id,3,5, Mur.TypeDeMur.LEFT);
         }
-        level[0][0] = new Mur(resources,id,3,5, Mur.TypeDeMur.BOTTOM_RIGHT_IN,0,0,widthEcran,heightEcran,width,height);
-        level[0][height-1] = new Mur(resources,id,3,5, Mur.TypeDeMur.TOP_RIGHT_IN,0,height-1,widthEcran,heightEcran,width,height);
-        level[width-1][0] = new Mur(resources,id,3,5, Mur.TypeDeMur.BOTTOM_LEFT_IN,width-1,0,widthEcran,heightEcran,width,height);
-        level[width-1][height-1] = new Mur(resources,id,3,5, Mur.TypeDeMur.TOP_LEFT_IN,width-1,height-1,widthEcran,heightEcran,width,height);
+        level[0][0] = new Mur(id,3,5, Mur.TypeDeMur.BOTTOM_RIGHT_IN);
+        level[0][height-1] = new Mur(id,3,5, Mur.TypeDeMur.TOP_RIGHT_IN);
+        level[width-1][0] = new Mur(id,3,5, Mur.TypeDeMur.BOTTOM_LEFT_IN);
+        level[width-1][height-1] = new Mur(id,3,5, Mur.TypeDeMur.TOP_LEFT_IN);
     }
 
     public void avanceX(MoveObject object)
@@ -55,11 +55,20 @@ public class Level implements Serializable{
         }
     }
 
-    public void invertLevel()
+    public void initializeTextureMurs(Resources resources,int widthEcran,int heightEcran)
     {
         for (int i=0 ;i<width ; i++) {
             for (int j = 0; j < height; j++) {
-                if(level[i][j] != null) level[i][j].invertXY();
+                if (level[i][j] != null) level[i][j].initializeSprite(resources, i, j, widthEcran, heightEcran, width, height);
+            }
+        }
+    }
+
+    public void initializeTextureMurs(Resources resources)
+    {
+        for (int i=0 ;i<width ; i++) {
+            for (int j = 0; j < height; j++) {
+                if (level[i][j] != null) level[i][j].initializeSprite(resources);
             }
         }
     }

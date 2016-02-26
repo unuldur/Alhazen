@@ -16,8 +16,8 @@ public class Player extends MoveObject  {
     private long lastFrameChangeTime = 0;
     private long frameLengthInMilliseconds;
 
-    public Player(Resources resources, int id, int nbFrame , int nbFrameMouvement, long frameLengthInMilliseconds,int posX,int posY,int orientation) {
-        super(resources, id, nbFrame,posX,posY,orientation);
+    public Player(int id, int nbFrame , int nbFrameMouvement, long frameLengthInMilliseconds,int posX,int posY) {
+        super(id, nbFrame,posX,posY);
         this.nbFrameMouvement = nbFrameMouvement;
         this.frameLengthInMilliseconds = frameLengthInMilliseconds;
     }

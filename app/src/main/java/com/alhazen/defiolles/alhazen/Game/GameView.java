@@ -55,13 +55,17 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         if(savedInstanceState == null) {
-            p = new Player(getResources(), R.drawable.perso, 5, 2, 100, 200, 200,getOrientation());
-            level = new Level(13, 18, getResources(), R.drawable.map,  getContext().getResources().getDisplayMetrics().widthPixels
-                    ,getContext().getResources().getDisplayMetrics().heightPixels);
+            p = new Player(R.drawable.perso, 5, 2, 100, 200, 200);
+            level = new Level(13, 18, R.drawable.map);
+            level.initializeTextureMurs(getResources(), getResources().getDisplayMetrics().widthPixels
+                    , getResources().getDisplayMetrics().heightPixels);
         }
         else{
             loadInstanceState(savedInstanceState);
+            level.initializeTextureMurs(getResources());
         }
+        p.initializeSprite(getResources());
+        p.setOrientation(getOrientation());
         fps = 60;
     }
 
@@ -92,30 +96,33 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     }
 
     public void draw() {
-
-        if (ourHolder.getSurface().isValid()) {
-            canvas = ourHolder.lockCanvas();
-            Matrix m = new Matrix();
-            switch(getOrientation())
-            {
-                case Surface.ROTATION_90:
-                    m.postRotate(270);
-                    m.postTranslate(0,getHeight());
-                    break;
-                case Surface.ROTATION_180:
-                    m.postRotate(180);
-                    m.postTranslate(getWidth(),getHeight());
-                    break;
-                case Surface.ROTATION_270:
-                    m.postRotate(90);
-                    m.postTranslate(getWidth(),0);
-                    break;
+        try {
+            if (ourHolder.getSurface().isValid()) {
+                canvas = ourHolder.lockCanvas();
+                Matrix m = new Matrix();
+                switch (getOrientation()) {
+                    case Surface.ROTATION_90:
+                        m.postRotate(270);
+                        m.postTranslate(0, getHeight());
+                        break;
+                    case Surface.ROTATION_180:
+                        m.postRotate(180);
+                        m.postTranslate(getWidth(), getHeight());
+                        break;
+                    case Surface.ROTATION_270:
+                        m.postRotate(90);
+                        m.postTranslate(getWidth(), 0);
+                        break;
+                }
+                canvas.setMatrix(m);
+                canvas.drawColor(Color.argb(255, 100, 100, 100));
+                p.draw(canvas, paint);
+                level.drawLevel(canvas, paint);
+                ourHolder.unlockCanvasAndPost(canvas);
             }
-            canvas.setMatrix(m);
-            canvas.drawColor(Color.argb(255, 100, 100, 100));
-            p.draw(canvas,paint);
-            level.drawLevel(canvas,paint);
-            ourHolder.unlockCanvasAndPost(canvas);
+        }catch(IllegalArgumentException ignored)
+        {
+
         }
 
     }

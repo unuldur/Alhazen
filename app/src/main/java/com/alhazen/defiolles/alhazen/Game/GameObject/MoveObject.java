@@ -20,12 +20,11 @@ public abstract class MoveObject extends GameObject {
     private boolean auSol;
     private int orientation;
 
-    public MoveObject(Resources resources, int id, int nbFrame,int posX,int posY,int orientation) {
-        super(resources, id, nbFrame,posX,posY);
+    public MoveObject( int id, int nbFrame,int posX,int posY) {
+        super(id, nbFrame,posX,posY);
         directionX = Direction.DirectionEnum.CENTER;
         directionY = Direction.DirectionEnum.BOTTOM;
         auSol = true;
-        this.orientation = orientation;
     }
 
     public void move(int pas,Level level)

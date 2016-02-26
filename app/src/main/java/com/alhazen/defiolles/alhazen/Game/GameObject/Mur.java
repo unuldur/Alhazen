@@ -30,14 +30,24 @@ public class Mur extends InanimateObject {
 
     private TypeDeMur typeDeMur;
 
-    public Mur(Resources resources, int id, int nbFrameX,int nbFrameY,TypeDeMur typeDeMur,int posX,int posY,
-               int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
-        super(resources, id, nbFrameX, nbFrameY, 0, 0);
+    public Mur(int id, int nbFrameX,int nbFrameY,TypeDeMur typeDeMur) {
+        super(id, nbFrameX, nbFrameY, 0, 0);
         this.typeDeMur = typeDeMur;
+    }
+
+    public void initializeSprite(Resources resources,int posX,int posY,
+                                 int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
+        super.initializeSprite(resources);
         initializeTexture(typeDeMur);
-        int decalageX =(tailleEcranX- getWidth()*(tailleTableauX))/2;
-        int decalageY =(tailleEcranY- getHeight()*(tailleTableauY))/2;
+        int decalageX =(tailleEcranX- getWidth()*(tailleTableauX)) / 2;
+        int decalageY = (tailleEcranY - getHeight()*(tailleTableauY))/2;
         setPosition(posX*getWidth()+decalageX,posY*getHeight()+decalageY);
+    }
+
+    @Override
+    public void initializeSprite(Resources resources) {
+        super.initializeSprite(resources);
+        initializeTexture(typeDeMur);
     }
 
     private void initializeTexture(TypeDeMur typeDeMur)
