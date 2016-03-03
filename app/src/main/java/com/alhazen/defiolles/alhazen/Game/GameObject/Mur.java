@@ -12,6 +12,7 @@ import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
  */
 public class Mur extends InanimateObject {
 
+
     public enum TypeDeMur{
         LEFT,
         CENTER,
@@ -35,14 +36,9 @@ public class Mur extends InanimateObject {
         this.typeDeMur = typeDeMur;
     }
 
-    public void initializeSprite(Resources resources,int posX,int posY,
-                                 int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
-        super.initializeSprite(resources);
-        initializeTexture(typeDeMur);
-        int decalageX =(tailleEcranX- getWidth()*(tailleTableauX)) / 2;
-        int decalageY = (tailleEcranY - getHeight()*(tailleTableauY))/2;
-        setPosition(posX*getWidth()+decalageX,posY*getHeight()+decalageY);
-    }
+
+
+
 
     @Override
     public void initializeSprite(Resources resources) {
@@ -99,55 +95,6 @@ public class Mur extends InanimateObject {
         {
             
         }
-    }
-
-    @Override
-    protected void aplieffectX(MoveObject moveObject) {
-        int x =0;
-        switch (moveObject.getOrientation())
-        {
-            case Surface.ROTATION_0:
-                x = Direction.getIntDirection(moveObject.getDirectionX());
-                break;
-            case Surface.ROTATION_90:
-                x = -Direction.getIntDirection(moveObject.getDirectionY());
-                moveObject.setAuSol(true);
-                break;
-            case Surface.ROTATION_270:
-                x = -Direction.getIntDirection(moveObject.getDirectionY());
-                moveObject.setAuSol(true);
-                break;
-            case Surface.ROTATION_180:
-                x = -Direction.getIntDirection(moveObject.getDirectionX());
-                break;
-        }
-        if(x != 0 ) moveObject.setPosX(moveObject.getPosX() - x);
-        effectX(moveObject);
-    }
-
-    @Override
-    protected void aplieffectY(MoveObject moveObject) {
-
-        int y =0;
-        switch (moveObject.getOrientation())
-        {
-            case Surface.ROTATION_0:
-                y = Direction.getIntDirection(moveObject.getDirectionY());
-                moveObject.setAuSol(true);
-                break;
-            case Surface.ROTATION_90:
-                y = Direction.getIntDirection(moveObject.getDirectionX());
-                break;
-            case Surface.ROTATION_270:
-                y = -Direction.getIntDirection(moveObject.getDirectionX());
-                break;
-            case Surface.ROTATION_180:
-                y = -Direction.getIntDirection(moveObject.getDirectionY());
-                moveObject.setAuSol(true);
-                break;
-        }
-        if(y != 0 ) moveObject.setPosY(moveObject.getPosY() - y);
-        effectY(moveObject);
     }
 
     @Override

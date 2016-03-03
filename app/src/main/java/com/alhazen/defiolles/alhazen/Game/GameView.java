@@ -1,7 +1,6 @@
 package com.alhazen.defiolles.alhazen.Game;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -12,13 +11,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
 import com.alhazen.defiolles.alhazen.Game.GameObject.Player;
 import com.alhazen.defiolles.alhazen.R;
 
@@ -42,6 +41,9 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     private Sensor senAccelerometer;
     private Level level;
 
+    private boolean peutCeLancer= false;
+    private MoveObject moveObject;
+
 
     Player p;
     public GameView(Context context,Bundle savedInstanceState) {
@@ -55,17 +57,19 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         if(savedInstanceState == null) {
-            p = new Player(R.drawable.perso, 5, 2, 100, 200, 200);
             level = new Level(13, 18, R.drawable.map);
-            level.initializeTextureMurs(getResources(), getResources().getDisplayMetrics().widthPixels
-                    , getResources().getDisplayMetrics().heightPixels);
+            level.initializeTexture(getResources(), getResources().getDisplayMetrics().widthPixels
+                    , getResources().getDisplayMetrics().heightPixels, getOrientation());
+            p = new Player(R.drawable.perso, 5, 2, 100, level.getPosXJoueurDepart(),level.getPosYJoueurDepart());
         }
         else{
             loadInstanceState(savedInstanceState);
-            level.initializeTextureMurs(getResources());
+            level.initializeTexture(getResources());
         }
         p.initializeSprite(getResources());
         p.setOrientation(getOrientation());
+
+        level.initializeOrientation(getOrientation());
         fps = 60;
     }
 
@@ -73,16 +77,10 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     public void run() {
         while (playing) {
 
-            long startFrameTime = System.currentTimeMillis();
-
-            update();
+            if(peutCeLancer)
+                update();
 
             draw();
-
-            timeThisFrame = System.currentTimeMillis() - startFrameTime;
-            if (timeThisFrame >= 1) {
-                fps = 1000 / timeThisFrame;
-            }
 
         }
 
@@ -91,6 +89,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     public void update() {
 
        p.move((int) (walkSpeedPerSecond / fps), level);
+       level.move((int) (walkSpeedPerSecond / fps),p);
        p.updateFrame();
 
     }
@@ -119,6 +118,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
                 p.draw(canvas, paint);
                 level.drawLevel(canvas, paint);
                 ourHolder.unlockCanvasAndPost(canvas);
+                peutCeLancer = true;
             }
         }catch(IllegalArgumentException ignored)
         {
@@ -129,9 +129,9 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     public void pause() {
         playing = false;
-        senSensorManager.unregisterListener(this);
         try {
             gameThread.join();
+            senSensorManager.unregisterListener(this);
         } catch (InterruptedException e) {
             Log.e("Error:", "joining thread");
         }
@@ -140,9 +140,8 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     public void saveInstanceState(Bundle bundle)
     {
-        bundle.putSerializable("Level",level);
-        bundle.putSerializable("Player",p);
-        bundle.putInt("Orientation", getContext().getResources().getConfiguration().orientation);
+        bundle.putSerializable("Level", level);
+        bundle.putSerializable("Player", p);
     }
 
     public void loadInstanceState(Bundle load)
@@ -150,6 +149,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
         p= (Player)load.getSerializable("Player");
         level = (Level)load.getSerializable("Level");
         p.setOrientation(getOrientation());
+
     }
 
     public void resume() {
@@ -194,7 +194,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
-            if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if(getOrientation() == Surface.ROTATION_0 || getOrientation() == Surface.ROTATION_180) {
                 changeDirectectionY(y);
             }
             else
@@ -220,6 +220,7 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
                 p.turnThis();
             }
         }
+        level.changeDirectectionY(val);
     }
 
     @Override

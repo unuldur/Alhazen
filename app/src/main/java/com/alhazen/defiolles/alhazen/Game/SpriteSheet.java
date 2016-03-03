@@ -8,6 +8,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.DisplayMetrics;
+import android.view.Display;
 
 import java.io.Serializable;
 
@@ -36,8 +38,8 @@ public class SpriteSheet implements Serializable{
                 frameWidth * frameCount,
                 frameHeight,
                 false);
-
         matrixRotation = new Matrix();
+        imageToDraw = Bitmap.createBitmap(spriteSheet,0,0,frameWidth,frameHeight);
 
     }
 
@@ -54,6 +56,7 @@ public class SpriteSheet implements Serializable{
                 false);
 
         matrixRotation = new Matrix();
+        imageToDraw = Bitmap.createBitmap(spriteSheet,0,0,frameWidth,frameHeight);
     }
 
     public void setFrame(int frame) throws Exception {

@@ -24,46 +24,4 @@ public class Direction {
         }
         return 0;
     }
-
-    public static DirectionEnum getDirectionToRotation(DirectionEnum dir,int rotation)
-    {
-        switch (rotation)
-        {
-            case Surface.ROTATION_90:
-                switch (dir){
-
-                    case LEFT:
-                        return DirectionEnum.BOTTOM;
-                    case RIGHT:
-                        return DirectionEnum.TOP;
-                    case TOP:
-                        return DirectionEnum.LEFT;
-                    case BOTTOM:
-                        return DirectionEnum.RIGHT;
-                }
-                break;
-            case Surface.ROTATION_180:
-                switch (dir){
-                    case TOP:
-                        return DirectionEnum.BOTTOM;
-                    case BOTTOM:
-                        return DirectionEnum.TOP;
-                }
-                break;
-                case Surface.ROTATION_270:
-                    switch (dir){
-
-                        case LEFT:
-                            return DirectionEnum.TOP;
-                        case RIGHT:
-                            return DirectionEnum.BOTTOM;
-                        case TOP:
-                            return DirectionEnum.RIGHT;
-                        case BOTTOM:
-                            return DirectionEnum.LEFT;
-                }
-                break;
-        }
-        return dir;
-    }
 }

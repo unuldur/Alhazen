@@ -40,9 +40,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         gameView.saveInstanceState(savedInstanceState);
-
         super.onSaveInstanceState(savedInstanceState);
     }
 

@@ -4,27 +4,35 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.view.Surface;
 
+import com.alhazen.defiolles.alhazen.Game.Collisions;
 import com.alhazen.defiolles.alhazen.Game.Direction;
 import com.alhazen.defiolles.alhazen.Game.Level;
 
 /**
  * Created by PAYS on 22/02/2016.
  */
-public abstract class MoveObject extends GameObject {
+public abstract class MoveObject extends GameObject{
 
 
     protected Direction.DirectionEnum directionX;
     protected Direction.DirectionEnum directionY;
     private boolean auSol;
     private int orientation;
+    private int posXDepart;
+    private int posYDepart;
 
     public MoveObject( int id, int nbFrame,int posX,int posY) {
         super(id, nbFrame,posX,posY);
         directionX = Direction.DirectionEnum.CENTER;
         directionY = Direction.DirectionEnum.BOTTOM;
         auSol = true;
+        posXDepart = posX;
+        posYDepart = posY;
     }
 
     public void move(int pas,Level level)
@@ -50,9 +58,23 @@ public abstract class MoveObject extends GameObject {
                 level.avanceY(this);
                 break;
             case Surface.ROTATION_180:
-                spriteSheet.rotation(180);
+                setPosX(getPosX() - Direction.getIntDirection(getDirectionX()) * pas);
+                level.avanceX(this);
+                setPosY(getPosY() + Direction.getIntDirection(getDirectionY()) * pas * 2);
+                level.avanceY(this);
                 break;
         }
+    }
+
+    @Override
+    public void effectX(MoveObject moveObject) {
+
+        super.effectX(moveObject);
+    }
+
+    @Override
+    public void effectY(MoveObject moveObject) {
+        super.effectY(moveObject);
     }
 
     public Direction.DirectionEnum getDirectionX() {
@@ -102,7 +124,7 @@ public abstract class MoveObject extends GameObject {
                 spriteSheet.setRotation(90);
                 break;
         }
-        if(getDirectionY()== Direction.DirectionEnum.TOP) turnThis();
+        if(getDirectionY()== Direction.DirectionEnum.TOP && orientation != Surface.ROTATION_180) turnThis();
     }
 
     public int getOrientation() {
@@ -110,4 +132,11 @@ public abstract class MoveObject extends GameObject {
 
     }
 
+    public void meurt() {
+        setPosX(posXDepart);
+        setPosY(posYDepart);
+        setAuSol(false);
+    }
+
+    public abstract void whenTuchOtherMoveObject(MoveObject o,Level l);
 }

@@ -4,7 +4,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.view.Surface;
 
+import com.alhazen.defiolles.alhazen.Game.Collisions;
+import com.alhazen.defiolles.alhazen.Game.Direction;
 import com.alhazen.defiolles.alhazen.Game.SpriteSheet;
 
 import java.io.Serializable;
@@ -86,10 +89,63 @@ public abstract class GameObject implements Serializable{
         return spriteSheet.getHeight();
     }
 
-    public void invertXY()
+
+    public void effectX(MoveObject moveObject)
     {
-        int tmp = posX;
-        posX = posY;
-        posY = tmp;
+        if(Collisions.collisionGameObjects(this, moveObject)) aplieffectX(moveObject);
+    }
+
+    public void effectY(MoveObject moveObject)
+    {
+        if(Collisions.collisionGameObjects(this,moveObject)) aplieffectY(moveObject);
+    }
+
+    protected void aplieffectX(MoveObject moveObject) {
+        int x =0;
+        switch (moveObject.getOrientation())
+        {
+            case Surface.ROTATION_0:
+                x = Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_90:
+                x = -Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_270:
+                x = -Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_180:
+                x = -Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+        }
+        if(x != 0 ){
+            moveObject.setPosX(moveObject.getPosX() - x);
+            effectX(moveObject);
+        }
+    }
+
+    protected void aplieffectY(MoveObject moveObject) {
+        int y = 0;
+        switch (moveObject.getOrientation()) {
+            case Surface.ROTATION_0:
+                y = Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+            case Surface.ROTATION_90:
+                y = Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_270:
+                y = -Direction.getIntDirection(moveObject.getDirectionX());
+                break;
+            case Surface.ROTATION_180:
+                y = Direction.getIntDirection(moveObject.getDirectionY());
+                moveObject.setAuSol(true);
+                break;
+        }
+        if (y != 0) {
+            moveObject.setPosY(moveObject.getPosY() - y);
+            effectY(moveObject);
+        }
     }
 }
