@@ -10,21 +10,27 @@ import com.alhazen.defiolles.alhazen.Game.Level;
  * Created by PAYS on 01/03/2016.
  */
 public class BlocMouvant extends MoveObject {
+
+
+
     public BlocMouvant(int id, int nbFrame, int posX, int posY) {
         super(id, nbFrame, posX, posY);
     }
 
+
+
     @Override
-    public void whenTuchOtherMoveObject(MoveObject o,Level l) {
+    public void whenTouchOtherMoveObject(MoveObject o, Level l) {
         if(!Collisions.collisionGameObjects(this, o)){
-            setDirectionX(Direction.DirectionEnum.CENTER);
+             setDirectionX(Direction.DirectionEnum.CENTER);
             return;
         }
         boolean dessus,dessous;
-        if (o.getDirectionX() != Direction.DirectionEnum.CENTER) {
+        if (o.getDirectionX() != Direction.DirectionEnum.CENTER && getDirectionX() == Direction.DirectionEnum.CENTER) {
 
             setDirectionX(o.getDirectionX());
         }
+
 
         if(getOrientation() == Surface.ROTATION_180 || getOrientation() == Surface.ROTATION_0) {
             dessus = Collisions.gameObjectDessusY(o,this);
@@ -35,6 +41,7 @@ public class BlocMouvant extends MoveObject {
                 setDirectionX(Direction.DirectionEnum.CENTER);
             }
             effectY(o);
+
 
         }
         else {
@@ -48,8 +55,10 @@ public class BlocMouvant extends MoveObject {
             effectX(o);
 
         }
-        if(dessus && getDirectionY()== Direction.DirectionEnum.TOP) o.meurt();
-        if(dessous && getDirectionY()== Direction.DirectionEnum.BOTTOM) o.meurt();
+        if(o.getClass() == Player.class) {
+            if (dessus && getDirectionY() == Direction.DirectionEnum.TOP) o.meurt();
+            if (dessous && getDirectionY() == Direction.DirectionEnum.BOTTOM) o.meurt();
+        }
 
 
 

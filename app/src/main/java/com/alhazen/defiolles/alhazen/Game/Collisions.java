@@ -22,7 +22,7 @@ public class Collisions {
         return !((gameObject2.getPosX() >= gameObject1.getPosX() + gameObject1.getWidth())
                 || (gameObject2.getPosX() + gameObject2.getWidth() <= gameObject1.getPosX())
                 || (0 >= gameObject1.getPosY() + gameObject1.getHeight())
-                || (gameObject2.getPosY() <= gameObject1.getPosY()));
+                || (gameObject2.getPosY() -1 <= gameObject1.getPosY()));
     }
 
     public static boolean gameObjectDessousY(GameObject gameObject1, GameObject gameObject2)
@@ -47,5 +47,13 @@ public class Collisions {
                 || (gameObject2.getPosY() + gameObject2.getHeight() <= gameObject1.getPosY())
                 || (gameObject2.getPosX()+gameObject2.getWidth() >= gameObject1.getPosX() + gameObject1.getWidth())
                 || (gameObject2.getPosX()+gameObject2.getWidth()+9999999 <= gameObject1.getPosX()));
+    }
+
+    public static boolean collisionPositionTailleGameObject(int x, int y , int width,int height, GameObject gameObject2)
+    {
+        return !((gameObject2.getPosX() >= x + width)
+                || (gameObject2.getPosX() + gameObject2.getWidth() <= x)
+                || (gameObject2.getPosY() >= y + height)
+                || (gameObject2.getPosY() + gameObject2.getHeight() <= y));
     }
 }

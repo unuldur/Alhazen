@@ -3,6 +3,7 @@ package com.alhazen.defiolles.alhazen.Game.GameObject;
 import android.content.res.Resources;
 
 import com.alhazen.defiolles.alhazen.Game.Collisions;
+import com.alhazen.defiolles.alhazen.Game.Level;
 
 /**
  * Created by PAYS on 23/02/2016.
@@ -10,8 +11,8 @@ import com.alhazen.defiolles.alhazen.Game.Collisions;
 public abstract class InanimateObject extends GameObject {
 
 
-    private int decalageX;
-    private int decalageY;
+    protected int decalageX;
+    protected int decalageY;
 
     public InanimateObject(int id, int nbFrame, int posX, int posY) {
         super(id, nbFrame, posX, posY);
@@ -29,6 +30,8 @@ public abstract class InanimateObject extends GameObject {
         decalageY = (tailleEcranY - getHeight()*(tailleTableauY))/2;
         setPosition(posX, posY);
     }
+
+    public abstract void effetSurLevel(Level level);
 
     public int getDecalageX() {
         return decalageX;

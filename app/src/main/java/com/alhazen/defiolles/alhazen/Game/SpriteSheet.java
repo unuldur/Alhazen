@@ -25,11 +25,17 @@ public class SpriteSheet implements Serializable{
 
     Bitmap spriteSheet;
     Bitmap imageToDraw;
-
+    Resources resources;
     Matrix matrixRotation;
+
+    private int id;
+
+
 
     public SpriteSheet(Resources resources,int id,int frameCount) {
         this.frameCountX = frameCount;
+        this.resources = resources;
+        this.id = id;
         frameCountY = 1;
         spriteSheet = BitmapFactory.decodeResource(resources, id);
         frameWidth = spriteSheet.getWidth()/frameCount;
@@ -45,8 +51,10 @@ public class SpriteSheet implements Serializable{
 
     public SpriteSheet(Resources resources,int id,int frameCountX, int frameCountY)
     {
+        this.resources = resources;
         this.frameCountX = frameCountX;
         this.frameCountY = frameCountY;
+        this.id = id;
         spriteSheet = BitmapFactory.decodeResource(resources, id);
         frameWidth = spriteSheet.getWidth()/frameCountX;
         frameHeight = spriteSheet.getHeight()/frameCountY;
@@ -57,6 +65,11 @@ public class SpriteSheet implements Serializable{
 
         matrixRotation = new Matrix();
         imageToDraw = Bitmap.createBitmap(spriteSheet,0,0,frameWidth,frameHeight);
+    }
+
+    public SpriteSheet clone()
+    {
+        return new SpriteSheet(resources,id,frameCountX,frameCountY);
     }
 
     public void setFrame(int frame) throws Exception {

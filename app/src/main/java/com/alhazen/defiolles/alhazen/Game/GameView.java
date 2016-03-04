@@ -90,6 +90,8 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
        p.move((int) (walkSpeedPerSecond / fps), level);
        level.move((int) (walkSpeedPerSecond / fps),p);
+        level.updateFrameLevel();
+
        p.updateFrame();
 
     }
@@ -115,8 +117,9 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
                 }
                 canvas.setMatrix(m);
                 canvas.drawColor(Color.argb(255, 100, 100, 100));
-                p.draw(canvas, paint);
+
                 level.drawLevel(canvas, paint);
+                p.draw(canvas, paint);
                 ourHolder.unlockCanvasAndPost(canvas);
                 peutCeLancer = true;
             }

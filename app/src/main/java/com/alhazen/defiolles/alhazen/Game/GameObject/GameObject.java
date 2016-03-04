@@ -19,9 +19,9 @@ public abstract class GameObject implements Serializable{
     protected transient SpriteSheet spriteSheet;
     private int posX;
     private int posY;
-    private int spriteId;
-    private int nbFrameX;
-    private int nbFrameY;
+    protected int spriteId;
+    protected int nbFrameX;
+    protected int nbFrameY;
 
     public GameObject(int id, int nbFrame, int posX, int posY) {
         spriteId = id;
@@ -147,5 +147,9 @@ public abstract class GameObject implements Serializable{
             moveObject.setPosY(moveObject.getPosY() - y);
             effectY(moveObject);
         }
+    }
+
+    public SpriteSheet getSpriteSheet() {
+        return spriteSheet;
     }
 }

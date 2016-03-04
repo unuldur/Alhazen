@@ -25,6 +25,20 @@ public abstract class MoveObject extends GameObject{
     private int orientation;
     private int posXDepart;
     private int posYDepart;
+    protected boolean aToucher = false;
+    boolean aTraverser = false;
+
+    public boolean isaTraverser() {
+        return aTraverser;
+    }
+
+    public void setaTraverser(boolean aTraverser) {
+        this.aTraverser = aTraverser;
+    }
+
+    public void setaToucher(boolean aToucher) {
+        this.aToucher = aToucher;
+    }
 
     public MoveObject( int id, int nbFrame,int posX,int posY) {
         super(id, nbFrame,posX,posY);
@@ -135,8 +149,8 @@ public abstract class MoveObject extends GameObject{
     public void meurt() {
         setPosX(posXDepart);
         setPosY(posYDepart);
-        setAuSol(false);
+        setAuSol(true);
     }
 
-    public abstract void whenTuchOtherMoveObject(MoveObject o,Level l);
+    public abstract void whenTouchOtherMoveObject(MoveObject o, Level l);
 }

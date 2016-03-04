@@ -6,12 +6,18 @@ import android.view.Surface;
 import com.alhazen.defiolles.alhazen.Game.Direction;
 import com.alhazen.defiolles.alhazen.Game.GameObject.InanimateObject;
 import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
+import com.alhazen.defiolles.alhazen.Game.Level;
 
 /**
  * Created by Julien Defiolles on 23/02/2016.
  */
 public class Mur extends InanimateObject {
 
+
+    @Override
+    public void effetSurLevel(Level level) {
+
+    }
 
     public enum TypeDeMur{
         LEFT,

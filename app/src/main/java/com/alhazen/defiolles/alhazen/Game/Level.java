@@ -1,17 +1,16 @@
 package com.alhazen.defiolles.alhazen.Game;
 
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.GradientDrawable;
 import android.view.Surface;
 
+import com.alhazen.defiolles.alhazen.Game.GameObject.BaseLaser;
 import com.alhazen.defiolles.alhazen.Game.GameObject.BlocMouvant;
 import com.alhazen.defiolles.alhazen.Game.GameObject.InanimateObject;
 import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
 import com.alhazen.defiolles.alhazen.Game.GameObject.Mur;
-import com.alhazen.defiolles.alhazen.Game.GameObject.Pic;
+import com.alhazen.defiolles.alhazen.Game.GameObject.Portail;
 import com.alhazen.defiolles.alhazen.R;
 
 import java.io.Serializable;
@@ -30,7 +29,7 @@ public class Level implements Serializable{
     int caseHeight;
     int posXJoueurDepart;
     int posYJoueurDepart;
-
+    boolean ajoutLevel = false;
 
     public Level(int width,int height, int id) {
         this.width = width;
@@ -51,6 +50,9 @@ public class Level implements Serializable{
         level[0][height-1] = new Mur(id,3,5, Mur.TypeDeMur.TOP_RIGHT_IN);
         level[width-1][0] = new Mur(id,3,5, Mur.TypeDeMur.BOTTOM_LEFT_IN);
         level[width-1][height-1] = new Mur(id,3,5, Mur.TypeDeMur.TOP_LEFT_IN);
+        level[2][2] = new Portail(R.drawable.portail,4);
+        level[2][height-3] = new Portail(R.drawable.portail,4,(Portail)level[2][2]);
+        level[1][height-2] = new BaseLaser(R.drawable.laser,8,2,0,0, Direction.DirectionEnum.RIGHT);
         posXJoueurDepart = width/2;
         posYJoueurDepart = height-2;
         moveObjects.add(new BlocMouvant(R.drawable.cube,1,200,200));
@@ -74,30 +76,20 @@ public class Level implements Serializable{
 
     }
 
-    public void avanceY(MoveObject object)
-    {
-        for (int i=0 ;i<width ; i++) {
+    public void avanceY(MoveObject object) {
+        for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (level[i][j] != null) level[i][j].effectY(object);
             }
         }
+
     }
 
-    public boolean collisionAvecMur(MoveObject object)
-    {
-        for (int i=0 ;i<width ; i++) {
-            for (int j = 0; j < height; j++) {
-                if (level[i][j] != null && Collisions.collisionGameObjects(object,level[i][j]))
-                    return true;
-            }
-        }
-        return false;
-    }
     public void initializeTexture(Resources resources, int widthEcran, int heightEcran, int orientation)
     {
         for (int i=0 ;i<width ; i++) {
             for (int j = 0; j < height; j++) {
-                if (level[i][j] != null) {
+                if (level[i][j] != null && level[i][j].getSpriteSheet() == null) {
                     if(orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180)
                         level[i][j].initializeSprite(resources, i, j, widthEcran, heightEcran, width, height);
                     else
@@ -109,8 +101,10 @@ public class Level implements Serializable{
         }
 
         for (MoveObject moveObject: moveObjects) {
-            moveObject.initializeSprite(resources);
+            if(moveObject.getSpriteSheet()  == null)
+                moveObject.initializeSprite(resources);
         }
+        ajoutLevel = false;
     }
 
     public void initializeTexture(Resources resources)
@@ -175,9 +169,45 @@ public class Level implements Serializable{
     public void move(int pas,MoveObject player)
     {
         for (MoveObject moveObject: moveObjects ) {
-            moveObject.whenTuchOtherMoveObject(player,this);
-            moveObject.move(pas,this);
+            moveObject.whenTouchOtherMoveObject(player, this);
+            moveObject.move(pas, this);
+            moveObject.updateFrame();
 
         }
     }
+
+    public void updateFrameLevel()
+    {
+        for (int i=0 ;i<width ; i++) {
+            for (int j = 0; j < height; j++) {
+                if (level[i][j] != null){
+                    level[i][j].effetSurLevel(this);
+                    level[i][j].updateFrame();
+                }
+            }
+        }
+    }
+
+    public InanimateObject exist(int posX, int posY)
+    {
+        return level[posX][posY];
+    }
+
+    public void addInanimateObject(int posX,int posY,InanimateObject object)
+    {
+        level[posX][posY] = object;
+        ajoutLevel = true;
+    }
+
+    public boolean toucheGameObject(int x, int y)
+    {
+        for (MoveObject move:moveObjects) {
+            if(Collisions.collisionPositionTailleGameObject((x)*caseWidth,(y+1)*caseHeight,caseWidth,caseHeight,move))
+                return true;
+        }
+        return false;
+    }
+
+
+
 }

@@ -68,7 +68,7 @@ public class Player extends MoveObject {
 
 
     @Override
-    public void whenTuchOtherMoveObject(MoveObject o,Level l) {
+    public void whenTouchOtherMoveObject(MoveObject o, Level l) {
 
     }
 }
