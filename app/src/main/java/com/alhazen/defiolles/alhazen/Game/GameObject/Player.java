@@ -1,13 +1,6 @@
 package com.alhazen.defiolles.alhazen.Game.GameObject;
 
-import android.content.res.Resources;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.util.Log;
-
-import com.alhazen.defiolles.alhazen.Game.Direction;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by PAYS on 21/02/2016.
@@ -63,6 +56,11 @@ public class Player extends MoveObject {
 
     @Override
     protected void aplieffectY(MoveObject moveObject) {
+
+    }
+
+    @Override
+    public void effetSurLevel(Level level) {
 
     }
 

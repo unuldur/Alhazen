@@ -1,12 +1,8 @@
 package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import android.content.res.Resources;
-import android.view.Surface;
 
-import com.alhazen.defiolles.alhazen.Game.Direction;
-import com.alhazen.defiolles.alhazen.Game.GameObject.InanimateObject;
-import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by Julien Defiolles on 23/02/2016.
@@ -50,6 +46,22 @@ public class Mur extends InanimateObject {
     public void initializeSprite(Resources resources) {
         super.initializeSprite(resources);
         initializeTexture(typeDeMur);
+    }
+
+    @Override
+    public void initializeSprite(Resources resources, int posX, int posY, int tailleEcranX, int tailleEcranY, int tailleTableauX, int tailleTableauY, int tailleMurX, int tailleMurY) {
+        initializeSprite(resources);
+        this.tailleMurX = tailleMurX;
+        this.tailleMurY = tailleMurY;
+        decalageX =(tailleEcranX- getWidth()*(tailleTableauX)) / 2;
+        decalageY = (tailleEcranY - getHeight()*(tailleTableauY))/2;
+        setPosition(posX, posY);
+        System.out.println(decalageX + " "+ decalageY+" "+ this.tailleMurX + " "+ this.tailleMurY);
+    }
+
+    @Override
+    public void killMe(Level level) {
+
     }
 
     private void initializeTexture(TypeDeMur typeDeMur)

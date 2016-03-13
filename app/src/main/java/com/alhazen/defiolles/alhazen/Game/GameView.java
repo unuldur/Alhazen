@@ -1,6 +1,11 @@
 package com.alhazen.defiolles.alhazen.Game;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -11,14 +16,24 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 
+import com.alhazen.defiolles.alhazen.FinishActivity;
+import com.alhazen.defiolles.alhazen.Game.GameObject.Button;
 import com.alhazen.defiolles.alhazen.Game.GameObject.MoveObject;
 import com.alhazen.defiolles.alhazen.Game.GameObject.Player;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
+import com.alhazen.defiolles.alhazen.PauseActivity;
 import com.alhazen.defiolles.alhazen.R;
 
 public class GameView extends SurfaceView implements Runnable,SensorEventListener {
@@ -42,35 +57,55 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     private Level level;
 
     private boolean peutCeLancer= false;
-    private MoveObject moveObject;
 
+
+    private SpriteSheet buttonPause;
+    private int numeroLevel;
 
     Player p;
-    public GameView(Context context,Bundle savedInstanceState) {
+    public GameView(Context context,Bundle savedInstanceState,int numeroLevel) {
         super(context);
 
         ourHolder = getHolder();
         paint = new Paint();
-
+        this.numeroLevel = numeroLevel;
         senSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         if(savedInstanceState == null) {
-            level = new Level(13, 18, R.drawable.map);
+            //level = new Level(13, 18, R.drawable.map,getContext());
+            level = new Level(numeroLevel,getContext());
             level.initializeTexture(getResources(), getResources().getDisplayMetrics().widthPixels
                     , getResources().getDisplayMetrics().heightPixels, getOrientation());
-            p = new Player(R.drawable.perso, 5, 2, 100, level.getPosXJoueurDepart(),level.getPosYJoueurDepart());
         }
         else{
             loadInstanceState(savedInstanceState);
             level.initializeTexture(getResources());
         }
-        p.initializeSprite(getResources());
-        p.setOrientation(getOrientation());
 
         level.initializeOrientation(getOrientation());
+
         fps = 60;
+        buttonPause = new SpriteSheet(getResources(),R.drawable.pause,1);
+    }
+
+    public void showPopup()
+    {
+        Intent intent = new Intent(getContext(), PauseActivity.class);
+        intent.putExtra("LevelCours",numeroLevel);
+        getContext().startActivity(intent);
+    }
+
+    private void levelFinish(){
+        Intent intent = new Intent(getContext(), FinishActivity.class);
+        intent.putExtra("LevelCour", numeroLevel);
+        int levelfini = getContext().getSharedPreferences("LevelFini", Context.MODE_PRIVATE).getInt("LevelFini",1);
+        if(levelfini +1 > numeroLevel)
+            getContext().getSharedPreferences("LevelFini", Context.MODE_PRIVATE).edit().putInt("LevelFini",levelfini+1).apply();
+        getContext().startActivity(intent);
+        Activity activity = (Activity)getContext();
+        activity.finish();
     }
 
     @Override
@@ -82,56 +117,71 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
             draw();
 
+            if(level.isLevelFinish()) levelFinish();
         }
 
     }
 
     public void update() {
 
-       p.move((int) (walkSpeedPerSecond / fps), level);
-       level.move((int) (walkSpeedPerSecond / fps),p);
-        level.updateFrameLevel();
-
-       p.updateFrame();
+    level.move((int) (walkSpeedPerSecond / fps));
+    level.updateFrameLevel();
 
     }
 
     public void draw() {
         try {
             if (ourHolder.getSurface().isValid()) {
+
                 canvas = ourHolder.lockCanvas();
+
                 Matrix m = new Matrix();
+                int posXPause = 0;
+                int posYPause = 0;
+                buttonPause.setRotation(0);
                 switch (getOrientation()) {
                     case Surface.ROTATION_90:
                         m.postRotate(270);
                         m.postTranslate(0, getHeight());
+                        posXPause = getHeight() - buttonPause.getHeight();
+                        posYPause = 0;
+                        buttonPause.setRotation(90);
                         break;
                     case Surface.ROTATION_180:
                         m.postRotate(180);
                         m.postTranslate(getWidth(), getHeight());
+                        posXPause = getWidth() ;
+                        posYPause = getHeight()-buttonPause.getHeight();
+                        buttonPause.setRotation(0);
                         break;
                     case Surface.ROTATION_270:
                         m.postRotate(90);
                         m.postTranslate(getWidth(), 0);
+                        posXPause = 0;
+                        posYPause = getWidth() - buttonPause.getWidth();
+                        buttonPause.setRotation(90);
                         break;
                 }
+                buttonPause.setFrame(0);
                 canvas.setMatrix(m);
                 canvas.drawColor(Color.argb(255, 100, 100, 100));
-
                 level.drawLevel(canvas, paint);
-                p.draw(canvas, paint);
+                buttonPause.drawCurrentFrame(canvas, posXPause, posYPause, paint);
                 ourHolder.unlockCanvasAndPost(canvas);
                 peutCeLancer = true;
             }
         }catch(IllegalArgumentException ignored)
         {
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
     public void pause() {
         playing = false;
+
         try {
             gameThread.join();
             senSensorManager.unregisterListener(this);
@@ -144,14 +194,11 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     public void saveInstanceState(Bundle bundle)
     {
         bundle.putSerializable("Level", level);
-        bundle.putSerializable("Player", p);
     }
 
     public void loadInstanceState(Bundle load)
     {
-        p= (Player)load.getSerializable("Player");
         level = (Level)load.getSerializable("Level");
-        p.setOrientation(getOrientation());
 
     }
 
@@ -174,15 +221,20 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
             case MotionEvent.ACTION_MOVE:
                 if(motionEvent.getX()>getWidth()/2)
-                    p.setDirectionX(Direction.DirectionEnum.RIGHT);
+                    level.movePlayer(Direction.DirectionEnum.RIGHT);
                 else
-                    p.setDirectionX(Direction.DirectionEnum.LEFT);
+                    level.movePlayer(Direction.DirectionEnum.LEFT);
+
+                break;
+            case MotionEvent.ACTION_DOWN:
+                    if(motionEvent.getX()< 60 && motionEvent.getY()<60)
+                        showPopup();
 
                 break;
 
             case MotionEvent.ACTION_UP:
 
-                p.setDirectionX(Direction.DirectionEnum.CENTER);
+                level.movePlayer(Direction.DirectionEnum.CENTER);
 
                 break;
         }
@@ -191,40 +243,21 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(!p.isAuSol()) return;
         Sensor mySensor = sensorEvent.sensor;
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
-            float z = sensorEvent.values[2];
             if(getOrientation() == Surface.ROTATION_0 || getOrientation() == Surface.ROTATION_180) {
-                changeDirectectionY(y);
+                level.changeDirectectionY(y);
             }
             else
             {
-                changeDirectectionY(x);
+                level.changeDirectectionY(x);
             }
 
         }
     }
 
-    private void changeDirectectionY(float val)
-    {
-        if (val < 1) {
-            if (p.getDirectionY() == Direction.DirectionEnum.BOTTOM) {
-                p.setDirectionY(Direction.DirectionEnum.TOP);
-                p.setAuSol(false);
-                p.turnThis();
-            }
-        } else {
-            if (p.getDirectionY() == Direction.DirectionEnum.TOP) {
-                p.setDirectionY(Direction.DirectionEnum.BOTTOM);
-                p.setAuSol(false);
-                p.turnThis();
-            }
-        }
-        level.changeDirectectionY(val);
-    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -235,4 +268,6 @@ public class GameView extends SurfaceView implements Runnable,SensorEventListene
     {
         return ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
     }
+
+
 }

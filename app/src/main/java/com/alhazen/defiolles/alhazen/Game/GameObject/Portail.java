@@ -1,7 +1,7 @@
 package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import com.alhazen.defiolles.alhazen.Game.Collisions;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by PAYS on 03/03/2016.
@@ -70,6 +70,11 @@ public class Portail extends InanimateObject {
 
     @Override
     public void effetSurLevel(Level level) {
+
+    }
+
+    @Override
+    public void killMe(Level level) {
 
     }
 }

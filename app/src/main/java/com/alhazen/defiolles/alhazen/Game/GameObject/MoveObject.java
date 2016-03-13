@@ -1,17 +1,9 @@
 package com.alhazen.defiolles.alhazen.Game.GameObject;
 
-import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.view.Surface;
 
-import com.alhazen.defiolles.alhazen.Game.Collisions;
 import com.alhazen.defiolles.alhazen.Game.Direction;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by PAYS on 22/02/2016.
@@ -49,6 +41,14 @@ public abstract class MoveObject extends GameObject{
         posYDepart = posY;
     }
 
+    public void setPosXDepart(int posXDepart) {
+        this.posXDepart = posXDepart;
+    }
+
+    public void setPosYDepart(int posYDepart) {
+        this.posYDepart = posYDepart;
+    }
+
     public void move(int pas,Level level)
     {
         switch (orientation)
@@ -56,17 +56,17 @@ public abstract class MoveObject extends GameObject{
             case Surface.ROTATION_0:
                 setPosX(getPosX() + Direction.getIntDirection(getDirectionX()) * pas);
                 level.avanceX(this);
-                setPosY(getPosY() + Direction.getIntDirection(getDirectionY()) * pas * 2);
+                setPosY((int)(getPosY() + Direction.getIntDirection(getDirectionY()) * pas * 1.2));
                 level.avanceY(this);
                 break;
             case Surface.ROTATION_90:
-                setPosX(getPosX() - Direction.getIntDirection(getDirectionY()) * pas * 2);
+                setPosX((int)(getPosX() - Direction.getIntDirection(getDirectionY()) * pas * 1.2));
                 level.avanceX(this);
                 setPosY(getPosY() + Direction.getIntDirection(getDirectionX()) * pas);
                 level.avanceY(this);
                 break;
             case Surface.ROTATION_270:
-                setPosX(getPosX() - Direction.getIntDirection(getDirectionY()) * pas * 2);
+                setPosX((int)(getPosX() - Direction.getIntDirection(getDirectionY()) * pas * 1.2));
                 level.avanceX(this);
                 setPosY(getPosY() - Direction.getIntDirection(getDirectionX()) * pas);
                 level.avanceY(this);
@@ -74,7 +74,7 @@ public abstract class MoveObject extends GameObject{
             case Surface.ROTATION_180:
                 setPosX(getPosX() - Direction.getIntDirection(getDirectionX()) * pas);
                 level.avanceX(this);
-                setPosY(getPosY() + Direction.getIntDirection(getDirectionY()) * pas * 2);
+                setPosY((int)(getPosY() + Direction.getIntDirection(getDirectionY()) * pas * 1.2));
                 level.avanceY(this);
                 break;
         }

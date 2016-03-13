@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Alhazen</string>
+    <string name="resume">Resume</string>
+    <string name="Pause">Pause</string>
+    <string name="quit">Quit</string>
+    <string name="Finish">Finish!</string>
+    <string name="Continue">Continue</string>
+    <string name="Restart">Restart</string>
+    <string name="erreurBluetooth">Bluetooth non activé, vous avez été redirigé à l accueil</string>
+    <string name="Levels">Levels</string>
+    <string name="GameFinish">Game Finish !!!</string>
+    <string name="tvSelectionLevel">Levels</string>
 </resources>

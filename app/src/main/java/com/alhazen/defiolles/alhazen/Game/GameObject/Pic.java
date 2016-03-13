@@ -3,7 +3,7 @@ package com.alhazen.defiolles.alhazen.Game.GameObject;
 import android.content.res.Resources;
 
 import com.alhazen.defiolles.alhazen.Game.Direction;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by PAYS on 01/03/2016.
@@ -58,6 +58,11 @@ public class Pic extends InanimateObject {
 
     @Override
     public void effetSurLevel(Level level) {
+
+    }
+
+    @Override
+    public void killMe(Level level) {
 
     }
 }

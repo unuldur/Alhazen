@@ -1,9 +1,7 @@
 package com.alhazen.defiolles.alhazen.Game.GameObject;
 
-import android.content.res.Resources;
-
 import com.alhazen.defiolles.alhazen.Game.Direction;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 import com.alhazen.defiolles.alhazen.Game.SpriteSheet;
 
 /**
@@ -12,7 +10,9 @@ import com.alhazen.defiolles.alhazen.Game.SpriteSheet;
 public class Laser extends InanimateObject {
     Direction.DirectionEnum direction;
     boolean touche = true;
-
+    private int posXLevel;
+    private int posYLevel;
+    private int toucher = 0;
     public void setTouche(boolean touche) {
         this.touche = touche;
     }
@@ -23,16 +23,33 @@ public class Laser extends InanimateObject {
         this.spriteSheet = spriteSheet;
     }
 
+
+    @Override
+    public void killMe(Level level) {
+
+    }
+
+    @Override
+    public void setPosition(int posX, int posY) {
+        posXLevel = posX;
+        posYLevel = posY;
+        super.setPosition(posX, posY);
+    }
+
     @Override
     protected void aplieffectX(MoveObject moveObject) {
         if(moveObject.getClass() != BlocMouvant.class && touche)
-            moveObject.meurt();
+            if(toucher > 5)
+                moveObject.meurt();
+            else
+                toucher++;
+        else
+            toucher = 0;
     }
 
     @Override
     protected void aplieffectY(MoveObject moveObject) {
-        if(moveObject.getClass() != BlocMouvant.class && touche)
-            moveObject.meurt();
+
     }
 
 
@@ -64,6 +81,6 @@ public class Laser extends InanimateObject {
 
     @Override
     public void effetSurLevel(Level level) {
-
+        touche = !level.toucheGameObject(this,BlocMouvant.class);
     }
 }

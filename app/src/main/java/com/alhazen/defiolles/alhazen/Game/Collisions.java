@@ -11,6 +11,7 @@ import com.alhazen.defiolles.alhazen.Game.GameObject.GameObject;
 public class Collisions {
     public static boolean collisionGameObjects(GameObject gameObject1, GameObject gameObject2)
     {
+        if(gameObject1 == null) return false;
         return !((gameObject2.getPosX() >= gameObject1.getPosX() + gameObject1.getWidth())
                 || (gameObject2.getPosX() + gameObject2.getWidth() <= gameObject1.getPosX())
                 || (gameObject2.getPosY() >= gameObject1.getPosY() + gameObject1.getHeight())

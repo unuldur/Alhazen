@@ -3,11 +3,11 @@ package com.alhazen.defiolles.alhazen.Game.GameObject;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.view.Surface;
 
 import com.alhazen.defiolles.alhazen.Game.Collisions;
 import com.alhazen.defiolles.alhazen.Game.Direction;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 import com.alhazen.defiolles.alhazen.Game.SpriteSheet;
 
 import java.io.Serializable;
@@ -152,4 +152,6 @@ public abstract class GameObject implements Serializable{
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
     }
+
+    public abstract void effetSurLevel(Level level);
 }

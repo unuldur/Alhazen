@@ -2,8 +2,7 @@ package com.alhazen.defiolles.alhazen.Game.GameObject;
 
 import android.content.res.Resources;
 
-import com.alhazen.defiolles.alhazen.Game.Collisions;
-import com.alhazen.defiolles.alhazen.Game.Level;
+import com.alhazen.defiolles.alhazen.Game.Level.Level;
 
 /**
  * Created by PAYS on 23/02/2016.
@@ -13,7 +12,8 @@ public abstract class InanimateObject extends GameObject {
 
     protected int decalageX;
     protected int decalageY;
-
+    protected int tailleMurX;
+    protected int tailleMurY;
     public InanimateObject(int id, int nbFrame, int posX, int posY) {
         super(id, nbFrame, posX, posY);
     }
@@ -24,14 +24,24 @@ public abstract class InanimateObject extends GameObject {
 
 
     public void initializeSprite(Resources resources,int posX,int posY,
-                                 int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY) {
+                                 int tailleEcranX,int tailleEcranY,int tailleTableauX,int tailleTableauY
+                                    ,int tailleMurX,int tailleMurY) {
         initializeSprite(resources);
-        decalageX =(tailleEcranX- getWidth()*(tailleTableauX)) / 2;
-        decalageY = (tailleEcranY - getHeight()*(tailleTableauY))/2;
+        this.tailleMurX = tailleMurX;
+        this.tailleMurY = tailleMurY;
+        decalageX =(tailleEcranX- tailleMurX*(tailleTableauX)) / 2;
+        decalageY = (tailleEcranY - tailleMurY*(tailleTableauY))/2;
         setPosition(posX, posY);
     }
 
-    public abstract void effetSurLevel(Level level);
+    @Override
+    public void setPosition(int posX,int posY)
+    {
+        super.setPosition(posX * tailleMurX + getDecalageX(), posY * tailleMurY +getDecalageY());
+    }
+    public abstract void killMe(Level level);
+
+
 
     public int getDecalageX() {
         return decalageX;
@@ -41,9 +51,5 @@ public abstract class InanimateObject extends GameObject {
         return decalageY;
     }
 
-    @Override
-    public void setPosition(int posX,int posY)
-    {
-        super.setPosition(posX * getWidth() + getDecalageX(), posY * getHeight() +getDecalageY());
-    }
+
 }
